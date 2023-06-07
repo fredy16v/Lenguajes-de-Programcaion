@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using ManejoPresupuesto.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 
 namespace ManejoPresupuesto.Servicios
@@ -30,6 +31,32 @@ namespace ManejoPresupuesto.Servicios
 				SELECT SCOPE_IDENTITY();", categoria);
 
 			categoria.Id = id;
+		}
+
+		public async Task<Categoria> ObtenerPorId(int id, int usuarioId)
+		{
+			using var connection = new SqlConnection(connectionString);
+			return await connection.QueryFirstOrDefaultAsync<Categoria>
+				(@"SELECT	
+					*
+				FROM Categorias
+				WHERE Id = @Id AND UsuarioId = @UsuarioId;", new { id, usuarioId });
+		}
+
+		public async Task Editar(Categoria categoria)
+		{
+			using var connection = new SqlConnection(connectionString);
+			await connection.ExecuteAsync
+				(@"UPDATE Categorias
+					SET Nombre = @Nombre,
+					TipoTransaccionId = @TipoTransaccionId
+				WHERE Id = @Id;", categoria);
+		}
+
+		public async Task Borrar(int id)
+		{
+			using var connection = new SqlConnection(connectionString);
+			await connection.ExecuteAsync("DELETE Categorias WHERE Id = @Id;", new { id });
 		}
 	}
 }

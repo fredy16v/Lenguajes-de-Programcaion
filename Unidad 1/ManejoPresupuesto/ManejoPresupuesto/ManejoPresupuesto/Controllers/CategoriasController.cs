@@ -1,6 +1,7 @@
 ﻿using ManejoPresupuesto.Models;
 using ManejoPresupuesto.Servicios;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
 
 namespace ManejoPresupuesto.Controllers
 {
@@ -39,6 +40,72 @@ namespace ManejoPresupuesto.Controllers
 			categoria.UsuarioId = usuarioId;
 
 			await repositorioCategorias.Crear(categoria);
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Editar(int id)
+		{
+			var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+			var categotia = await repositorioCategorias.ObtenerPorId(id, usuarioId);
+
+			if (categotia is null)
+			{
+				return RedirectToAction("NoENcontrado", "Home");
+			}
+
+			return View(categotia);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Editar(Categoria modelo)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(modelo);
+			}
+
+			var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+			var categotia = await repositorioCategorias.ObtenerPorId(modelo.Id, usuarioId);
+
+			if (categotia is null)
+			{
+				return RedirectToAction("NoENcontrado", "Home");
+			}
+
+			modelo.UsuarioId = usuarioId;
+			await repositorioCategorias.Editar(modelo);
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> Borrar(int id)
+		{
+			var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+			var categotia = await repositorioCategorias.ObtenerPorId(id, usuarioId);
+
+			if (categotia is null)
+			{
+				return RedirectToAction("NoENcontrado", "Home");
+			}
+
+			return View(categotia);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> BorrarCategotia(int id)
+		{
+			var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+			var categotia = await repositorioCategorias.ObtenerPorId(id, usuarioId);
+
+			if (categotia is null)
+			{
+				return RedirectToAction("NoENcontrado", "Home");
+			}
+
+			await repositorioCategorias.Borrar(id);
 
 			return RedirectToAction("Index");
 		}
