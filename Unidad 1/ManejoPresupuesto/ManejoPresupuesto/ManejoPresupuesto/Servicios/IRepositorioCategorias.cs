@@ -8,6 +8,7 @@ namespace ManejoPresupuesto.Servicios
 		Task Crear(Categoria categoria);
 		Task Editar(Categoria categoria);
 		Task<IEnumerable<Categoria>> Obtener(int usuarioId);
+		Task<IEnumerable<Categoria>> Obtener(int usuarioId, TipoTransaccion tipoTransaccionId);
 		Task<Categoria> ObtenerPorId(int id, int usuarioId);
 	}
 }

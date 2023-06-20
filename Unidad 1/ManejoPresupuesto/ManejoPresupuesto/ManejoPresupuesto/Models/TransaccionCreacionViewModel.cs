@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
 
 namespace ManejoPresupuesto.Models
@@ -7,5 +8,7 @@ namespace ManejoPresupuesto.Models
 	{
 		public IEnumerable<SelectListItem> Cuentas { get; set; }
 		public IEnumerable<SelectListItem> Categorias { get; set; }
+		[Display(Name = "Tipo de Transaccion")]
+		public TipoTransaccion TipoTransaccionId { get; set; } = TipoTransaccion.Ingreso;
 	}
 }
