@@ -16,5 +16,7 @@ namespace ManejoPresupuesto.Models
 		public int CuentaId { get; set; }
 		[Display(Name = "Categorias")]
 		public int CategoriaId { get; set; }
+		[Display(Name = "Tipo de Transaccion")]
+		public TipoTransaccion TipoTransaccionId { get; set; } = TipoTransaccion.Ingreso;
 	}
 }
