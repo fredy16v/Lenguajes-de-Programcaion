@@ -43,18 +43,6 @@ namespace ManejoPresupesto.Controllers
             DateTime fechaInicio;
             DateTime fechaFin;
 
-            if (mes <= 0 || mes > 12 || año <= 1900)
-            {
-                var hoy = DateTime.Today;
-                fechaInicio = new DateTime(hoy.Year, hoy.Month, 1);
-            }
-            else 
-            {
-                fechaInicio = new DateTime(año, mes, 1);
-            }
-            
-            fechaFin = fechaInicio.AddMonths(1).AddDays(-1);
-            
             var parametros = new ParametrosObtenerTransaccionesPorUsuario
             {
                 UsuarioId = usuarioId,

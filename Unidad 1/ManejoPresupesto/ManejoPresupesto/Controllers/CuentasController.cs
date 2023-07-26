@@ -183,29 +183,16 @@ namespace ManejoPresupesto.Controllers
                 return RedirectToAction("NoEncontrado", "Home");
             }
 
-            DateTime fechaInicio;
-            DateTime fechaFin;
-
-            if (mes <= 0 || mes > 12 || año <= 1900)
-            {
-                var hoy = DateTime.Today;
-                fechaInicio = new DateTime(hoy.Year, hoy.Month, 1);
-            }
-            else 
-            {
-                fechaInicio = new DateTime(año, mes, 1);
-            }
-
-            fechaFin = fechaInicio.AddMonths(1).AddDays(-1);
-            var parametrosTransaccionesPorCuenta = new ParametrosTransaccionesPorCuenta 
+            
+            /*var parametrosTransaccionesPorCuenta = new ParametrosTransaccionesPorCuenta 
             {
                 CuentaId = cuenta.Id,
                 UsuarioId = usuarioId,
                 FechaInicio = fechaInicio,
                 FechaFin = fechaFin,
-            };
+            };*/
 
-            var transacciones = await repositorioTransacciones
+            /*var transacciones = await repositorioTransacciones
                 .ObtenerPorCuentaId(parametrosTransaccionesPorCuenta);
 
             var modelo = new ReporteTransaccionesDetalladas();
@@ -220,15 +207,17 @@ namespace ManejoPresupesto.Controllers
 
             modelo.TransaccionesAgrupadas = transaccionesPorFecha;
             modelo.FechaInicio = fechaInicio;
-            modelo.FechaFin = fechaFin;
+            modelo.FechaFin = fechaFin;*/
+            
+            ViewBag.Cuenta = cuenta.Nombre;
 
-            ViewBag.mesAnterior = fechaInicio.AddMonths(-1).Month;
+            /*ViewBag.mesAnterior = fechaInicio.AddMonths(-1).Month;
             ViewBag.añoAnterior = fechaInicio.AddMonths(-1).Year;
 
             ViewBag.mesPosterior = fechaInicio.AddMonths(1).Month;
             ViewBag.añoPosterior = fechaInicio.AddMonths(1).Year;
 
-            ViewBag.urlRetorno = HttpContext.Request.Path + HttpContext.Request.QueryString;
+            ViewBag.urlRetorno = HttpContext.Request.Path + HttpContext.Request.QueryString;*/
 
             return View(modelo);
         }
