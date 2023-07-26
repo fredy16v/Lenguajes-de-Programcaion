@@ -13,6 +13,7 @@ namespace ManejoPresupesto.Controllers
         private readonly IServicioUsuarios servicioUsuarios;
         private readonly IRepositorioCuentas repositorioCuentas;
         private readonly IRepositorioTransacciones repositorioTransacciones;
+        private readonly IServicioReportes servicioReportes;
         private readonly IMapper mapper;
 
         public CuentasController(
@@ -20,6 +21,7 @@ namespace ManejoPresupesto.Controllers
             IServicioUsuarios servicioUsuarios,
             IRepositorioCuentas repositorioCuentas,
             IRepositorioTransacciones repositorioTransacciones,
+            IServicioReportes servicioReportes,
             IMapper mapper
             )
         {
@@ -27,6 +29,7 @@ namespace ManejoPresupesto.Controllers
             this.servicioUsuarios = servicioUsuarios;
             this.repositorioCuentas = repositorioCuentas;
             this.repositorioTransacciones = repositorioTransacciones;
+            this.servicioReportes = servicioReportes;
             this.mapper = mapper;
         }
 
@@ -183,41 +186,9 @@ namespace ManejoPresupesto.Controllers
                 return RedirectToAction("NoEncontrado", "Home");
             }
 
-            
-            /*var parametrosTransaccionesPorCuenta = new ParametrosTransaccionesPorCuenta 
-            {
-                CuentaId = cuenta.Id,
-                UsuarioId = usuarioId,
-                FechaInicio = fechaInicio,
-                FechaFin = fechaFin,
-            };*/
-
-            /*var transacciones = await repositorioTransacciones
-                .ObtenerPorCuentaId(parametrosTransaccionesPorCuenta);
-
-            var modelo = new ReporteTransaccionesDetalladas();
             ViewBag.Cuenta = cuenta.Nombre;
-
-            var transaccionesPorFecha = transacciones.OrderByDescending(x => x.FechaTransaccion)
-                .GroupBy(x => x.FechaTransaccion)
-                .Select(grupo => new ReporteTransaccionesDetalladas.TransaccionesPorFecha {
-                    FechaTransacion = grupo.Key,
-                    Transacciones = grupo.AsEnumerable(),                    
-                });
-
-            modelo.TransaccionesAgrupadas = transaccionesPorFecha;
-            modelo.FechaInicio = fechaInicio;
-            modelo.FechaFin = fechaFin;*/
             
-            ViewBag.Cuenta = cuenta.Nombre;
-
-            /*ViewBag.mesAnterior = fechaInicio.AddMonths(-1).Month;
-            ViewBag.añoAnterior = fechaInicio.AddMonths(-1).Year;
-
-            ViewBag.mesPosterior = fechaInicio.AddMonths(1).Month;
-            ViewBag.añoPosterior = fechaInicio.AddMonths(1).Year;
-
-            ViewBag.urlRetorno = HttpContext.Request.Path + HttpContext.Request.QueryString;*/
+            var modelo = await servicioReportes.ObtenerReporteTransaccionesDetalladasPorCuenta(usuarioId, cuenta.Id, mes, año, ViewBag);
 
             return View(modelo);
         }
