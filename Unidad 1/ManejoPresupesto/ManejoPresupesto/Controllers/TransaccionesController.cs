@@ -323,7 +323,7 @@ namespace ManejoPresupesto.Controllers
 
             var modelo = new ReporteMensualViewModel
             {
-                TransaccionesPorMes = transaccionesPorMes,
+                TransaccionesPorMes = transaccionesAgrupadas,
                 Año = año
             };
             
