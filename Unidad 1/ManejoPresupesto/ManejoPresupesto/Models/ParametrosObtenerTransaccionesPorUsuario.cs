@@ -1,8 +1,9 @@
-namespace ManejoPresupesto.Models;
-
-public class ParametrosObtenerTransaccionesPorUsuario
+﻿namespace ManejoPresupesto.Models
 {
-    public int UsuarioId { get; set; }
-    public DateTime FechaInicio { get; set; }
-    public DateTime FechaFin { get; set; }
+    public class ParametrosObtenerTransaccionesPorUsuario
+    {
+        public int UsuarioId { get; set; }
+        public DateTime FechaInicio { get; set; }
+        public DateTime FechaFin { get; set; }
+    }
 }

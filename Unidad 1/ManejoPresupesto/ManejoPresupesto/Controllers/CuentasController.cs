@@ -187,9 +187,9 @@ namespace ManejoPresupesto.Controllers
             }
 
             ViewBag.Cuenta = cuenta.Nombre;
-            
-            var modelo = await servicioReportes.ObtenerReporteTransaccionesDetalladasPorCuenta(usuarioId, cuenta.Id, mes, año, ViewBag);
-
+            var modelo = await servicioReportes.ObtenerReporteTransaccionesDetalladasPorCuenta(
+                usuarioId, cuenta.Id, mes, año, ViewBag
+                );
             return View(modelo);
         }
 
