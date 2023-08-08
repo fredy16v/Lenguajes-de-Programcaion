@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Data;
+using AutoMapper;
 using ManejoPresupesto.Models;
 using ManejoPresupesto.Servicios;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Transactions;
+using ClosedXML.Excel;
 
 namespace ManejoPresupesto.Controllers
 {
@@ -329,8 +331,66 @@ namespace ManejoPresupesto.Controllers
             
             return View(modelo);
         }
-        public IActionResult Excel() { return View(); }
+
+        public IActionResult Excel()
+        {
+            return View();
+        }
+
+        public async Task<FileResult> ExportarExelPorMes(int mes, int año)
+        {
+            var fechaInicio = new DateTime(año, mes, 1);
+            var fechaFin = fechaInicio.AddMonths(1).AddDays(-1);
+            var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+
+            var transacciones = await repositorioTransacciones.ObtenerPorUsuarioId
+                (new ParametrosObtenerTransaccionesPorUsuario
+                {
+                    UsuarioId = usuarioId,
+                    FechaInicio = fechaInicio,
+                    FechaFin = fechaFin,
+                });
+            
+            var nombreArchivo = $"Manejo Presupuesto - {fechaInicio.ToString("MMM yyyy")}.xlsx";
+
+            return GenerarExel(nombreArchivo, transacciones);
+        }
         public IActionResult Calendario() { return View(); }
 
+        private FileResult GenerarExel(string nombreArchivo, IEnumerable<Transaccion> transacciones)
+        {
+
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.AddRange(new DataColumn[] {
+                new DataColumn("Fecha"),
+                new DataColumn("Cuenta"),
+                new DataColumn("Categoria"),
+                new DataColumn("Nota"),
+                new DataColumn("Monto"),
+                new DataColumn("Ingreso/Gasto"),
+            });
+
+            foreach (var transaccion in transacciones)
+            {
+                dataTable.Rows.Add(
+                    transaccion.FechaTransaccion,
+                    transaccion.Cuenta,
+                    transaccion.Categoria,
+                    transaccion.Nota,
+                    transaccion.Monto,
+                    transaccion.TipoTransaccionId
+                );
+            }
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dataTable, "Transacciones");
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", nombreArchivo);
+                }
+            }
+        }
     }
 }

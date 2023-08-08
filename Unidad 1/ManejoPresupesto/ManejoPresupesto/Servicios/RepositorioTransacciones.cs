@@ -101,6 +101,7 @@ namespace ManejoPresupesto.Servicios
 	                    trn.Id,
 	                    trn.FechaTransaccion,
                         trn.Monto,
+                        trn.Nota,
 	                    cat.Nombre AS Categoria,
 	                    cue.Nombre AS Cuenta,
 	                    cat.TipoTransaccionId

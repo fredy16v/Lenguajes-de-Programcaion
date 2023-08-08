@@ -1,7 +1,24 @@
 ﻿@{
-    ViewData["Title"] = "Reporte Excel";
+    ViewData["Title"] = "Exportar Transacciones a Excel";
+    var hoy = DateTime.Today;
+    var haceUnMes = hoy.AddMonths(-1);
+    var mesActual = hoy.Month;
+    var añoActual = hoy.Year;
+    var mesAnterior = haceUnMes.Month;
 }
 
 <h1>@ViewData["Title"]</h1>
 
 <partial name="_SubMenu" model="SubMenuTransacciones.Excel"  />
+
+<div class="mb-3">
+    <a asp-action="ExportarExelPorMes" asp-route-mes="@mesActual" asp-route-año="@añoActual" class="btn btn-success">
+        Exportar mes actual
+    </a> <span> ~ @hoy.ToString("MMMM yyyy")</span>
+</div>
+
+<div class="mb-3">
+    <a asp-action="ExportarExelPorMes" asp-route-mes="@mesAnterior" asp-route-año="@añoActual" class="btn btn-success">
+        Exportar mes anterior
+    </a> <span> ~ @haceUnMes.ToString("MMMM yyyy")</span>
+</div>
