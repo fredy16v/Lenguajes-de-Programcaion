@@ -1,4 +1,6 @@
 using ManejoPresupesto.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +10,14 @@ public class UsuariosController : Controller
 {
     private readonly UserManager<Usuario> _userManager;
     private readonly SignInManager<Usuario> _signInManager;
+    private readonly HttpContext _httpContext;
 
-    public UsuariosController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager)
+    public UsuariosController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager,
+        HttpContext httpContext)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _httpContext = httpContext;
     }
 
     public IActionResult Registro()
@@ -44,11 +49,14 @@ public class UsuariosController : Controller
         return RedirectToAction("Index", "Transacciones");
     }
 
-    public IActionResult Logout()
+    [HttpPost]
+    public async Task<IActionResult> Logout()
     {
-        throw new NotImplementedException();
+        await _httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction("Index", "Transacciones");
     }
 
+    [HttpPost]
     public IActionResult Login()
     {
         throw new NotImplementedException();
