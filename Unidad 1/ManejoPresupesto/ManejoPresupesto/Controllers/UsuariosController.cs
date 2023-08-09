@@ -10,14 +10,11 @@ public class UsuariosController : Controller
 {
     private readonly UserManager<Usuario> _userManager;
     private readonly SignInManager<Usuario> _signInManager;
-    private readonly HttpContext _httpContext;
 
-    public UsuariosController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager,
-        HttpContext httpContext)
+    public UsuariosController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager)
     {
         _userManager = userManager;
         _signInManager = signInManager;
-        _httpContext = httpContext;
     }
 
     public IActionResult Registro()
@@ -52,13 +49,29 @@ public class UsuariosController : Controller
     [HttpPost]
     public async Task<IActionResult> Logout()
     {
-        await _httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
         return RedirectToAction("Index", "Transacciones");
     }
 
-    [HttpPost]
     public IActionResult Login()
     {
-        throw new NotImplementedException();
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult Login(LoginViewModel modelo)
+    {
+        if (!ModelState.IsValid)
+            return View(modelo);
+
+        var resultado = _signInManager.PasswordSignInAsync(modelo.Email, modelo.Password, true, false).Result;
+
+        if (!resultado.Succeeded)
+        {
+            ModelState.AddModelError("", "Usuario o contraseña incorrectos");
+            return View(modelo);
+        }
+
+        return RedirectToAction("Index", "Transacciones");
     }
 }
