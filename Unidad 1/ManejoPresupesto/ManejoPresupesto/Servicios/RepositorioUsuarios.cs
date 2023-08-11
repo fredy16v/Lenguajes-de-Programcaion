@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using ManejoPresupesto.Models;
 using Microsoft.Data.SqlClient;
 
@@ -29,7 +30,7 @@ namespace ManejoPresupesto.Servicios
 
             modelo.EmailNormalizado = modelo.Email.ToUpper();
 
-            var id = await connection.QuerySingleAsync<int>
+            var usuarioId = await connection.QuerySingleAsync<int>
                 (@"INSERT INTO Usuarios
                     (Email, EmailNormalizado, PasswordHash)
                     VALUES
@@ -37,7 +38,10 @@ namespace ManejoPresupesto.Servicios
                     SELECT SCOPE_IDENTITY();",
                 modelo);
 
-            return id;
+            await connection.ExecuteAsync("CrearDatosUsuarioNuevo", new { id = usuarioId}
+            , commandType: CommandType.StoredProcedure);
+
+            return usuarioId;
         }
     }
 }
