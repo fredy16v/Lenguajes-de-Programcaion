@@ -55,4 +55,11 @@ public class UsuariosController : Controller
             return View(modelo);
         }
     }
+    
+    [AllowAnonymous]
+    [HttpGet]
+    public IActionResult Login()
+    {
+        return View();
+    }
 }
